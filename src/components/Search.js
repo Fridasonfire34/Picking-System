@@ -9,12 +9,17 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import {useRoute} from '@react-navigation/native';
 
 const Home = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [packingId, setPackingId] = useState('');
+
+  const route = useRoute();
+  const {packingId: id} = route.params;
+  console.log({id});
 
   useEffect(() => {
     setLoading(true);

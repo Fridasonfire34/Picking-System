@@ -18,6 +18,7 @@ import {
 } from 'react-native-vision-camera';
 import {BarcodeFormat, scanBarcodes} from 'vision-camera-code-scanner';
 import * as REA from 'react-native-reanimated';
+import {useNavigation} from '@react-navigation/native';
 
 const Home = () => {
   global.__reanimatedWorkletInit = () => {};
@@ -25,6 +26,8 @@ const Home = () => {
   const [hasPermission, setHasPermission] = useState(false);
   const [barcode, setBarcode] = useState('');
   const [readyToScan, setReadyToScan] = useState(false);
+
+  const navigation = useNavigation();
 
   const devices = useCameraDevices();
   const device = useMemo(() => {
@@ -44,6 +47,7 @@ const Home = () => {
 
   const handleSearch = () => {
     if (packingId.length > 0) {
+      navigation.push('Search', {packingId});
     } else {
       Alert.alert('Error', 'Ingrese un numero de packing');
     }
@@ -72,11 +76,11 @@ const Home = () => {
         },
         {
           text: 'Mostrar Coincidencias',
-          onPress: () => console.log('OK Pressed'),
+          onPress: () => navigation.push('Search', {packingId}),
         },
       ]);
     }
-  }, [barcode]);
+  }, [barcode, navigation, packingId]);
 
   return (
     <View
@@ -97,15 +101,22 @@ const Home = () => {
           onChangeText={text => setPackingId(text)}
         />
         <Button title="Buscar" onPress={handleSearch} />
-        <Text style={{textAlign: 'center', marginVertical: 10, fontSize: 15}}>
-          o
-        </Text>
         {device == null ? (
           <ActivityIndicator size={20} color={'red'} />
         ) : (
           <>
             {hasPermission && (
-              <Button title="Escanear código" onPress={handleSearchBarcode} />
+              <>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    marginVertical: 10,
+                    fontSize: 15,
+                  }}>
+                  o
+                </Text>
+                <Button title="Escanear código" onPress={handleSearchBarcode} />
+              </>
             )}
           </>
         )}
