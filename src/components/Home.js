@@ -1,9 +1,46 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
-import {Alert, Button, Text, TextInput, View} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Button,
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  Vibration,
+  View,
+} from 'react-native';
+import {
+  Camera,
+  useCameraDevices,
+  useFrameProcessor,
+} from 'react-native-vision-camera';
+import {BarcodeFormat, scanBarcodes} from 'vision-camera-code-scanner';
+import * as REA from 'react-native-reanimated';
 
 const Home = () => {
+  global.__reanimatedWorkletInit = () => {};
   const [packingId, setPackingId] = useState('');
+  const [hasPermission, setHasPermission] = useState(false);
+  const [barcode, setBarcode] = useState('');
+  const [readyToScan, setReadyToScan] = useState(false);
+
+  const devices = useCameraDevices();
+  const device = useMemo(() => {
+    return devices.back;
+  }, [devices]);
+
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet';
+    const barcodes = scanBarcodes(frame, [BarcodeFormat.ALL_FORMATS], {
+      checkInverted: true,
+    });
+    if (barcodes[0]?.content?.data) {
+      const findCode = barcodes[0]?.content?.data;
+      REA.runOnJS(setBarcode)(findCode);
+    }
+  }, []);
 
   const handleSearch = () => {
     if (packingId.length > 0) {
@@ -12,7 +49,34 @@ const Home = () => {
     }
   };
 
-  const handleSearchBarcode = () => {};
+  const handleSearchBarcode = async () => {
+    setReadyToScan(true);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const status = await Camera.requestCameraPermission();
+      setHasPermission(status === 'authorized');
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (barcode.length > 0) {
+      Vibration.vibrate();
+      setReadyToScan(false);
+      Alert.alert('Código encontrado', barcode, [
+        {
+          text: 'Cancelar',
+          onPress: () => setBarcode(''),
+          style: 'cancel',
+        },
+        {
+          text: 'Mostrar Coincidencias',
+          onPress: () => console.log('OK Pressed'),
+        },
+      ]);
+    }
+  }, [barcode]);
 
   return (
     <View
@@ -36,8 +100,28 @@ const Home = () => {
         <Text style={{textAlign: 'center', marginVertical: 10, fontSize: 15}}>
           o
         </Text>
-        <Button title="Escanear código" onPress={handleSearchBarcode} />
+        {device == null ? (
+          <ActivityIndicator size={20} color={'red'} />
+        ) : (
+          <>
+            {hasPermission && (
+              <Button title="Escanear código" onPress={handleSearchBarcode} />
+            )}
+          </>
+        )}
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={readyToScan}
+        onRequestClose={() => setReadyToScan(!readyToScan)}>
+        <Camera
+          style={StyleSheet.absoluteFill}
+          device={device}
+          isActive={hasPermission && readyToScan}
+          frameProcessor={frameProcessor}
+        />
+      </Modal>
     </View>
   );
 };

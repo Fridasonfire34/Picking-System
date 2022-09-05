@@ -10,8 +10,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "babel-plugin-module-resolver": "^4.1.0",
     "react": "18.0.0",
-    "react-native": "0.69.5"
+    "react-native": "0.69.5",
+    "react-native-hole-view": "^2.1.1",
+    "react-native-reanimated": "^2.10.0",
+    "react-native-vision-camera": "^2.14.1",
+    "vision-camera-code-scanner": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
