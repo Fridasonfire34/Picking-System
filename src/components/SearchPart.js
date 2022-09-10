@@ -1,34 +1,29 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Button,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {ActivityIndicator, ScrollView, Text, View} from 'react-native';
 import {useRoute} from '@react-navigation/native';
+import {LOCAL_IP} from '../utils/server';
+import {duplicateElements} from '../utils/elements';
 
-const LOCAL_IP = 'http://192.168.1.76:3000';
-
-const Home = () => {
+const SearchPart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [packingId, setPackingId] = useState('');
 
   const route = useRoute();
-  const {packingId: id} = route.params;
+  const {packingId, partNumber} = route.params;
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${LOCAL_IP}/api/consult-report?id=${id}`)
+    fetch(`${LOCAL_IP}/api/consult-part?id=${packingId}&part=${partNumber}`)
       .then(res => res.json())
       .then(res => {
         if (res.length) {
-          setData(res);
+          const [count] = res.map(item => {
+            return item.qty;
+          });
+          const duplicate = duplicateElements(res, Number(count));
+          setData(duplicate);
         } else {
           setData([]);
         }
@@ -38,20 +33,7 @@ const Home = () => {
         setError(err);
       })
       .finally(() => setLoading(false));
-  }, [id]);
-
-  const handleSearch = () => {
-    if (packingId.length > 0) {
-      if (data.length > 0) {
-        const filter = data.filter(d => d.packingdiskno.includes(packingId));
-        setData(filter);
-      } else {
-        Alert.alert('No hay datos');
-      }
-    } else {
-      Alert.alert('Error', 'Ingrese un numero de packing');
-    }
-  };
+  }, [packingId, partNumber]);
 
   if (error) {
     return (
@@ -69,20 +51,6 @@ const Home = () => {
         <>
           {data.length > 0 ? (
             <View style={{margin: 10}}>
-              <View
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                  marginVertical: 10,
-                }}>
-                <TextInput
-                  placeholder="Packing ID"
-                  style={{flex: 1, borderWidth: 0.5}}
-                  onChangeText={text => setPackingId(text)}
-                />
-                <Button title="Buscar" onPress={handleSearch} />
-              </View>
               <Text style={{fontWeight: 'bold'}}>
                 Resultados encontrados: {data.length}
               </Text>
@@ -114,4 +82,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default SearchPart;

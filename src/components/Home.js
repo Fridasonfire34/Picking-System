@@ -47,7 +47,7 @@ const Home = () => {
 
   const handleSearch = () => {
     if (packingId.length > 0) {
-      navigation.push('Search', {packingId});
+      navigation.push('SearchPacking', {packingId});
       setPackingId('');
     } else {
       Alert.alert('Error', 'Ingrese un numero de packing');

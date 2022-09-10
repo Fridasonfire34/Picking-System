@@ -7,8 +7,11 @@
  */
 
 import React from 'react';
+
 import HomeScreen from './src/components/Home';
-import SearchScreen from './src/components/Search';
+import SearchScreen from './src/components/SearchPacking';
+import SearchPart from './src/components/SearchPart';
+
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -23,7 +26,16 @@ const App = () => {
           component={HomeScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen
+          name="SearchPacking"
+          component={SearchScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SearchPart"
+          component={SearchPart}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
