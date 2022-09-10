@@ -9,9 +9,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  StyleSheet,
 } from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {Fab, Icon, SearchIcon} from 'native-base';
+import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {LOCAL_IP} from '../utils/server';
 
 const SearchPacking = () => {
@@ -21,6 +21,8 @@ const SearchPacking = () => {
   const [partNumber, setPartNumber] = useState('');
 
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+
   const route = useRoute();
   const {packingId} = route.params;
 
@@ -30,7 +32,8 @@ const SearchPacking = () => {
       .then(res => res.json())
       .then(res => {
         if (res.length) {
-          setData(res);
+          const filtered = res.filter(value => Number(value.qty) > 0);
+          setData(filtered);
         } else {
           setData([]);
         }
@@ -40,7 +43,7 @@ const SearchPacking = () => {
         setError(err);
       })
       .finally(() => setLoading(false));
-  }, [packingId]);
+  }, [packingId, isFocused]);
 
   const handleSearch = () => {
     if (partNumber.length > 0) {
@@ -59,6 +62,19 @@ const SearchPacking = () => {
     }
   };
 
+  const handleCreateReport = () => {
+    Alert.alert('Mensaje', 'Esta operación generara un reporte', [
+      {
+        text: 'Cancelar',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {text: 'Continuar', onPress: () => handleParseReport()},
+    ]);
+  };
+
+  const handleParseReport = () => {};
+
   if (error) {
     return (
       <View>
@@ -75,6 +91,7 @@ const SearchPacking = () => {
         <>
           {data.length > 0 ? (
             <View style={{margin: 10}}>
+              <Button title="Escanear" />
               <View
                 style={{
                   display: 'flex',
@@ -93,7 +110,7 @@ const SearchPacking = () => {
               <Text style={{fontWeight: 'bold'}}>
                 Resultados encontrados: {data.length}
               </Text>
-              <ScrollView contentContainerStyle={{paddingBottom: '45%'}}>
+              <ScrollView contentContainerStyle={{paddingBottom: '80%'}}>
                 {data.map((item, index) => {
                   return (
                     <View key={index} style={{padding: 10}}>
@@ -102,18 +119,31 @@ const SearchPacking = () => {
                         <Text style={{fontWeight: 'bold'}}>
                           ID: {index + 1}
                         </Text>
-                        <Text>Part Number: {item.partnumber}</Text>
-                        <Text>Build Sequence: {item.buildsequence}</Text>
-                        <Text>Balloon Number: {item.balloonnumber ?? '-'}</Text>
-                        <Text>QTY: {item.qty}</Text>
-                        <Text>PONo: {item.pono}</Text>
-                        <Text>Vender No: {item.vendorno}</Text>
-                        <Text>Packing ID: {item.packingdiskno}</Text>
-                        <Text>Linea: {item.linea}</Text>
+                        <Text style={styles.text}>
+                          Part Number: {item.partnumber}
+                        </Text>
+                        <Text style={styles.text}>
+                          Build Sequence: {item.buildsequence}
+                        </Text>
+                        <Text style={styles.text}>
+                          Balloon Number: {item.balloonnumber ?? '-'}
+                        </Text>
+                        <Text style={styles.text}>QTY: {item.qty}</Text>
+                        <Text style={styles.text}>PONo: {item.pono}</Text>
+                        <Text style={styles.text}>
+                          Vender No: {item.vendorno}
+                        </Text>
+                        <Text style={styles.text}>
+                          Packing ID: {item.packingdiskno}
+                        </Text>
+                        <Text style={styles.text}>Linea: {item.linea}</Text>
                       </TouchableOpacity>
                     </View>
                   );
                 })}
+                <View style={{marginVertical: 5}}>
+                  <Button title="Finalizar" onPress={handleCreateReport} />
+                </View>
               </ScrollView>
             </View>
           ) : (
@@ -123,9 +153,13 @@ const SearchPacking = () => {
           )}
         </>
       )}
-      <Fab position="absolute" size="sm" icon={<SearchIcon />} />
     </View>
   );
 };
 
+const styles = StyleSheet.create({
+  text: {
+    color: 'black',
+  },
+});
 export default SearchPacking;
