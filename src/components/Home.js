@@ -48,6 +48,7 @@ const Home = () => {
   const handleSearch = () => {
     if (packingId.length > 0) {
       navigation.push('Search', {packingId});
+      setPackingId('');
     } else {
       Alert.alert('Error', 'Ingrese un numero de packing');
     }
@@ -98,6 +99,7 @@ const Home = () => {
         <TextInput
           placeholder="Packing ID"
           style={{borderWidth: 1, borderColor: '#bdbdbd', marginVertical: 10}}
+          value={packingId}
           onChangeText={text => setPackingId(text)}
         />
         <Button title="Buscar" onPress={handleSearch} />
