@@ -24,12 +24,11 @@ const Home = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${LOCAL_IP}/api/consult-report`)
+    fetch(`${LOCAL_IP}/api/consult-report?id=${id}`)
       .then(res => res.json())
       .then(res => {
-        if (res.length && id.length) {
-          const filter = res.filter(d => d.packingdiskno.includes(id));
-          setData(filter);
+        if (res.length) {
+          setData(res);
         } else {
           setData([]);
         }
