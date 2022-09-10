@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import {Fab, Icon, SearchIcon} from 'native-base';
 import {LOCAL_IP} from '../utils/server';
 
 const SearchPacking = () => {
@@ -122,6 +123,7 @@ const SearchPacking = () => {
           )}
         </>
       )}
+      <Fab position="absolute" size="sm" icon={<SearchIcon />} />
     </View>
   );
 };

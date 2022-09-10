@@ -14,30 +14,33 @@ import SearchPart from './src/components/SearchPart';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
+import {NativeBaseProvider} from 'native-base';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="SearchPacking"
-          component={SearchScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="SearchPart"
-          component={SearchPart}
-          options={{headerShown: false}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <NativeBaseProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="SearchPacking"
+            component={SearchScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="SearchPart"
+            component={SearchPart}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 };
 
