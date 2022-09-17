@@ -47,7 +47,7 @@ const SearchPacking = () => {
 
   const handleSearch = () => {
     if (partNumber.length > 0) {
-      navigation.push('SearchPart', {packingId, partNumber});
+      navigation?.push('SearchPart', {packingId, partNumber});
       setPartNumber('');
     } else {
       Alert.alert('Error', 'Ingrese un numero de packing');
@@ -56,7 +56,7 @@ const SearchPacking = () => {
 
   const handlePress = itemNumber => {
     if (itemNumber.length > 0) {
-      navigation.push('SearchPart', {packingId, partNumber: itemNumber});
+      navigation?.push('SearchPart', {packingId, partNumber: itemNumber});
     } else {
       Alert.alert('Error', 'Part number incorrecto');
     }
@@ -82,6 +82,8 @@ const SearchPacking = () => {
       </View>
     );
   }
+
+  console.log(data);
 
   return (
     <View>

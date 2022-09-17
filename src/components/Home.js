@@ -47,7 +47,7 @@ const Home = () => {
 
   const handleSearch = () => {
     if (packingId.length > 0) {
-      navigation.push('SearchPacking', {packingId});
+      navigation?.push('SearchPacking', {packingId});
       setPackingId('');
     } else {
       Alert.alert('Error', 'Ingrese un numero de packing');
@@ -77,7 +77,7 @@ const Home = () => {
         },
         {
           text: 'Mostrar Coincidencias',
-          onPress: () => navigation.push('Search', {packingId}),
+          onPress: () => navigation?.push('Search', {packingId}),
         },
       ]);
     }
