@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -10,21 +10,38 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  Modal,
+  Vibration,
 } from 'react-native';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
 import {LOCAL_IP} from '../utils/server';
+import {
+  Camera,
+  useCameraDevices,
+  useFrameProcessor,
+} from 'react-native-vision-camera';
+import {BarcodeFormat, scanBarcodes} from 'vision-camera-code-scanner';
+import * as REA from 'react-native-reanimated';
 
 const SearchPacking = () => {
+  global.__reanimatedWorkletInit = () => {};
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [partNumber, setPartNumber] = useState('');
+  const [barcode, setBarcode] = useState('');
+  const [readyToScan, setReadyToScan] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false);
 
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-
   const route = useRoute();
   const {packingId} = route.params;
+
+  const devices = useCameraDevices();
+  const device = useMemo(() => {
+    return devices.back;
+  }, [devices]);
 
   useEffect(() => {
     setLoading(true);
@@ -45,6 +62,43 @@ const SearchPacking = () => {
       .finally(() => setLoading(false));
   }, [packingId, isFocused]);
 
+  useEffect(() => {
+    (async () => {
+      const status = await Camera.requestCameraPermission();
+      setHasPermission(status === 'authorized');
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (barcode.length > 0) {
+      Vibration.vibrate();
+      setReadyToScan(false);
+      Alert.alert('Código encontrado', barcode, [
+        {
+          text: 'Cancelar',
+          onPress: () => setBarcode(''),
+          style: 'cancel',
+        },
+        {
+          text: 'Mostrar Coincidencias',
+          onPress: () =>
+            navigation?.push('SearchPart', {packingId, partNumber: barcode}),
+        },
+      ]);
+    }
+  }, [barcode, navigation, packingId]);
+
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet';
+    const barcodes = scanBarcodes(frame, [BarcodeFormat.ALL_FORMATS], {
+      checkInverted: true,
+    });
+    if (barcodes[0]?.content?.data) {
+      const findCode = barcodes[0]?.content?.data;
+      REA.runOnJS(setBarcode)(findCode);
+    }
+  }, []);
+
   const handleSearch = () => {
     if (partNumber.length > 0) {
       navigation?.push('SearchPart', {packingId, partNumber});
@@ -60,6 +114,10 @@ const SearchPacking = () => {
     } else {
       Alert.alert('Error', 'Part number incorrecto');
     }
+  };
+
+  const handleSearchBarcode = () => {
+    setReadyToScan(true);
   };
 
   const handleCreateReport = () => {
@@ -93,7 +151,7 @@ const SearchPacking = () => {
         <>
           {data.length > 0 ? (
             <View style={{margin: 10}}>
-              <Button title="Escanear" />
+              <Button title="Escanear" onPress={handleSearchBarcode} />
               <View
                 style={{
                   display: 'flex',
@@ -155,6 +213,18 @@ const SearchPacking = () => {
           )}
         </>
       )}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={readyToScan}
+        onRequestClose={() => setReadyToScan(!readyToScan)}>
+        <Camera
+          style={StyleSheet.absoluteFill}
+          device={device}
+          isActive={hasPermission && readyToScan}
+          frameProcessor={frameProcessor}
+        />
+      </Modal>
     </View>
   );
 };
