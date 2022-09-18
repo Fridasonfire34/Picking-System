@@ -73,7 +73,9 @@ const SearchPacking = () => {
     ]);
   };
 
-  const handleParseReport = () => {};
+  const handleParseReport = () => {
+    navigation?.push('ReadPDF', {packingId, data});
+  };
 
   if (error) {
     return (
@@ -82,8 +84,6 @@ const SearchPacking = () => {
       </View>
     );
   }
-
-  console.log(data);
 
   return (
     <View>

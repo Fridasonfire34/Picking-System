@@ -11,6 +11,7 @@ import React from 'react';
 import HomeScreen from './src/components/Home';
 import SearchScreen from './src/components/SearchPacking';
 import SearchPart from './src/components/SearchPart';
+import ReadPDF from './src/components/ReadPDF';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
@@ -36,6 +37,11 @@ const App = () => {
           <Stack.Screen
             name="SearchPart"
             component={SearchPart}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="ReadPDF"
+            component={ReadPDF}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
