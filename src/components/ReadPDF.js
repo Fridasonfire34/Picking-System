@@ -1,6 +1,15 @@
 import {useRoute} from '@react-navigation/core';
 import React, {useEffect, useState} from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Button,
+  Dimensions,
+  Share,
+  StyleSheet,
+  View,
+  Text,
+} from 'react-native';
 import Pdf from 'react-native-pdf';
 import {LOCAL_IP} from '../utils/server';
 
@@ -10,43 +19,52 @@ const ReadPDF = () => {
 
   const [uri, setUri] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetch(`${LOCAL_IP}/api/export-report?id=${packingId}`)
-      .then(res => {
-        console.log(res);
-        setUri(res.url);
-      })
+      .then(res => res.json())
+      .then(res => setUri(`data:application/pdf;base64,${res.blob}`))
       .catch(err => {
+        setError(true);
         console.error(err);
       })
       .finally(() => setLoading(false));
   }, [data, packingId]);
 
+  const handleSharePdf = () => {
+    Share.share({url: uri})
+      .then(res => console.log(res))
+      .catch(err => {
+        Alert.alert('Error', 'Existe un error al compartir');
+        console.log(err);
+      });
+  };
+
+  if (error) {
+    return (
+      <View>
+        <Text>Existe un error</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : (
-        <Pdf
-          trustAllCerts={false}
-          source={{
-            uri: uri,
-          }}
-          onLoadComplete={(numberOfPages, filePath) => {
-            //console.log(`Number of pages: ${numberOfPages}`);
-          }}
-          onPageChanged={(page, numberOfPages) => {
-            //console.log(`Current page: ${page}`);
-          }}
-          onError={error => {
-            //console.log(error);
-          }}
-          onPressLink={uri => {
-            //console.log(`Link pressed: ${uri}`);
-          }}
-          style={styles.pdf}
-        />
+      <Pdf
+        trustAllCerts={false}
+        source={{
+          uri,
+        }}
+        onError={err => {
+          console.log(error);
+          setError(err);
+        }}
+        style={styles.pdf}
+        activityIndicator={<ActivityIndicator animating={true} />}
+      />
+      {!loading && !error && (
+        <Button title="Compartir PDF" onPress={handleSharePdf} />
       )}
     </View>
   );

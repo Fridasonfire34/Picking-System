@@ -201,9 +201,6 @@ const SearchPacking = () => {
                     </View>
                   );
                 })}
-                <View style={{marginVertical: 5}}>
-                  <Button title="Finalizar" onPress={handleCreateReport} />
-                </View>
               </ScrollView>
             </View>
           ) : (
@@ -213,6 +210,9 @@ const SearchPacking = () => {
           )}
         </>
       )}
+      <View style={{marginVertical: 5}}>
+        <Button title="Finalizar" onPress={handleCreateReport} />
+      </View>
       <Modal
         animationType="slide"
         transparent={true}
