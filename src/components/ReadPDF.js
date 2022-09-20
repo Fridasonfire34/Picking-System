@@ -27,18 +27,16 @@ const ReadPDF = () => {
       .then(res => setUri(`data:application/pdf;base64,${res.blob}`))
       .catch(err => {
         setError(true);
-        console.error(err);
+        console.error('fetch pdf', err);
       })
       .finally(() => setLoading(false));
   }, [data, packingId]);
 
   const handleSharePdf = () => {
-    Share.share({url: uri})
-      .then(res => console.log(res))
-      .catch(err => {
-        Alert.alert('Error', 'Existe un error al compartir');
-        console.log(err);
-      });
+    Share.share({url: uri}).catch(err => {
+      Alert.alert('Error', 'Existe un error al compartir');
+      console.log('share', err);
+    });
   };
 
   if (error) {
@@ -56,10 +54,6 @@ const ReadPDF = () => {
         source={{
           uri,
         }}
-        onError={err => {
-          console.log(error);
-          setError(err);
-        }}
         style={styles.pdf}
         activityIndicator={<ActivityIndicator animating={true} />}
       />
@@ -75,7 +69,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 25,
+    paddingBottom: 10,
   },
   pdf: {
     flex: 1,
