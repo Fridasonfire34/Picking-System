@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Pdf from 'react-native-pdf';
 import {LOCAL_IP} from '../utils/server';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const ReadPDF = () => {
   const route = useRoute();
@@ -24,7 +25,9 @@ const ReadPDF = () => {
   useEffect(() => {
     fetch(`${LOCAL_IP}/api/export-report?id=${packingId}`)
       .then(res => res.json())
-      .then(res => setUri(`data:application/pdf;base64,${res.blob}`))
+      .then(res => {
+        setUri(`data:application/pdf;base64,${res.blob}`);
+      })
       .catch(err => {
         setError(true);
         console.error('fetch pdf', err);
@@ -33,10 +36,30 @@ const ReadPDF = () => {
   }, [data, packingId]);
 
   const handleSharePdf = () => {
-    Share.share({url: uri}).catch(err => {
-      Alert.alert('Error', 'Existe un error al compartir');
-      console.log('share', err);
-    });
+    fetch(`${LOCAL_IP}/api/export-report?id=${packingId}`)
+      .then(res => res.json())
+      .then(res => {
+        let base64Str = res.blob;
+        let pdfLocation = RNFetchBlob.fs.dirs.DocumentDir + '/' + 'test.pdf';
+        RNFetchBlob.fs
+          .writeFile(pdfLocation, base64Str, 'base64')
+          .then(resFile => {
+            console.log('success', {resFile, pdfLocation});
+            RNFetchBlob.android.actionViewIntent(
+              pdfLocation,
+              'application/pdf',
+            );
+          })
+          .catch(err => {
+            console.log('error', err);
+            Alert.alert('Error', 'Something went wrong');
+          });
+      })
+      .catch(err => {
+        setError(true);
+        console.error('fetch pdf', err);
+      })
+      .finally(() => setLoading(false));
   };
 
   if (error) {
