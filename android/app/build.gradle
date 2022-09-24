@@ -137,6 +137,13 @@ android {
         javaMaxHeapSize "4g"
     }
 
+    configurations.all {
+        resolutionStrategy {
+           force 'androidx.core:core:1.7.0'
+           force 'androidx.core:core-ktx:1.7.0'
+        }
+     }
+
     defaultConfig {
         applicationId "com.tmppickingsystem"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -269,6 +276,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "androidx.core:core:1.7.0" 
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
