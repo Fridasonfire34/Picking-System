@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android:uninstall": "adb uninstall com.tmppickingsystem",
+    "android:debug": "./cli.sh && react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "cli": "./cli.sh"
   },
   "dependencies": {
     "@react-navigation/native": "^6.0.12",

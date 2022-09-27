@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {LOCAL_IP} from '../utils/server';
+import {server} from '../utils/server';
 import {duplicateElements} from '../utils/elements';
 import {CloseIcon} from 'native-base';
 
@@ -27,7 +27,7 @@ const SearchPart = () => {
   }, [obtainData, packingId, partNumber]);
 
   const obtainData = useCallback(() => {
-    fetch(`${LOCAL_IP}/api/consult-part?id=${packingId}&part=${partNumber}`)
+    fetch(`${server()}/api/consult-part?id=${packingId}&part=${partNumber}`)
       .then(res => res.json())
       .then(res => {
         if (res.length) {
@@ -51,7 +51,7 @@ const SearchPart = () => {
     setLoading(true);
     const currentQty = data.length;
     fetch(
-      `${LOCAL_IP}/api/update-packing?qty=${
+      `${server()}/api/update-packing?qty=${
         currentQty - 1
       }&id=${packingId}&part=${partNumber}`,
     )

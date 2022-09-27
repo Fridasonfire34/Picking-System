@@ -14,7 +14,7 @@ import {
   Vibration,
 } from 'react-native';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
-import {LOCAL_IP} from '../utils/server';
+import {server} from '../utils/server';
 import {
   Camera,
   useCameraDevices,
@@ -46,7 +46,7 @@ const SearchPacking = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${LOCAL_IP}/api/consult-packing?id=${packingId}`)
+    fetch(`${server()}/api/consult-packing?id=${packingId}`)
       .then(res => res.json())
       .then(res => {
         if (res.length) {
@@ -132,8 +132,9 @@ const SearchPacking = () => {
     ]);
   };
 
+  console.log('server', server());
   const handleParseReport = () => {
-    fetch(`${LOCAL_IP}/api/export-report?id=${packingId}`)
+    fetch(`${server()}/api/export-report?id=${packingId}`)
       .then(res => res.json())
       .then(res => {
         let base64Str = res.blob;

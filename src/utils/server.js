@@ -1,3 +1,8 @@
-const LOCAL_IP = 'http://192.168.1.69:3000';
+import * as dir from '../../server.json';
 
-export {LOCAL_IP};
+const server = () => {
+  const host = 'http://' + dir.hostname + ':' + '3000';
+  return host;
+};
+
+export {server};

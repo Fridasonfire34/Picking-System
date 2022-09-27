@@ -5,13 +5,12 @@ import {
   Alert,
   Button,
   Dimensions,
-  Share,
   StyleSheet,
   View,
   Text,
 } from 'react-native';
 import Pdf from 'react-native-pdf';
-import {LOCAL_IP} from '../utils/server';
+import {server} from '../utils/server';
 import RNFetchBlob from 'rn-fetch-blob';
 
 const ReadPDF = () => {
@@ -23,7 +22,7 @@ const ReadPDF = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch(`${LOCAL_IP}/api/export-report?id=${packingId}`)
+    fetch(`${server()}/api/export-report?id=${packingId}`)
       .then(res => res.json())
       .then(res => {
         setUri(`data:application/pdf;base64,${res.blob}`);
@@ -36,7 +35,7 @@ const ReadPDF = () => {
   }, [data, packingId]);
 
   const handleSharePdf = () => {
-    fetch(`${LOCAL_IP}/api/export-report?id=${packingId}`)
+    fetch(`${server()}/api/export-report?id=${packingId}`)
       .then(res => res.json())
       .then(res => {
         let base64Str = res.blob;
