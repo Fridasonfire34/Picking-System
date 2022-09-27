@@ -10,6 +10,7 @@ import {
   TextInput,
   Vibration,
   View,
+  PermissionsAndroid,
 } from 'react-native';
 import {
   Camera,
@@ -23,7 +24,8 @@ import {useNavigation} from '@react-navigation/native';
 const Home = () => {
   global.__reanimatedWorkletInit = () => {};
   const [packingId, setPackingId] = useState('');
-  const [hasPermission, setHasPermission] = useState(false);
+  const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
+  const [hasPermissionStore, setHasPermissionStore] = useState(false);
   const [barcode, setBarcode] = useState('');
   const [readyToScan, setReadyToScan] = useState(false);
 
@@ -60,8 +62,20 @@ const Home = () => {
 
   useEffect(() => {
     (async () => {
-      const status = await Camera.requestCameraPermission();
-      setHasPermission(status === 'authorized');
+      const statusCamera = await Camera.requestCameraPermission();
+      setHasPermissionCamera(statusCamera === 'authorized');
+
+      const resultStore = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      ]);
+      const isGrantedStore =
+        resultStore[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] ===
+          'granted' &&
+        resultStore[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] ===
+          'granted';
+
+      setHasPermissionStore(isGrantedStore);
     })();
   }, []);
 
@@ -98,28 +112,34 @@ const Home = () => {
         </Text>
         <TextInput
           placeholder="Packing ID"
+          keyboardType="numeric"
           style={{borderWidth: 1, borderColor: '#bdbdbd', marginVertical: 10}}
           value={packingId}
           onChangeText={text => setPackingId(text)}
+          editable={hasPermissionStore}
         />
-        <Button title="Buscar" onPress={handleSearch} />
+        <Button
+          title="Buscar"
+          onPress={handleSearch}
+          disabled={!hasPermissionStore}
+        />
         {device == null ? (
           <ActivityIndicator size={20} color={'red'} />
         ) : (
           <>
-            {hasPermission && (
-              <>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    marginVertical: 10,
-                    fontSize: 15,
-                  }}>
-                  o
-                </Text>
-                <Button title="Escanear código" onPress={handleSearchBarcode} />
-              </>
-            )}
+            <Text
+              style={{
+                textAlign: 'center',
+                marginVertical: 10,
+                fontSize: 15,
+              }}>
+              o
+            </Text>
+            <Button
+              title="Escanear código"
+              onPress={handleSearchBarcode}
+              disabled={!hasPermissionCamera}
+            />
           </>
         )}
       </View>
@@ -131,7 +151,7 @@ const Home = () => {
         <Camera
           style={StyleSheet.absoluteFill}
           device={device}
-          isActive={hasPermission && readyToScan}
+          isActive={hasPermissionCamera && readyToScan}
           frameProcessor={frameProcessor}
         />
       </Modal>

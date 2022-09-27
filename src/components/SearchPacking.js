@@ -22,6 +22,7 @@ import {
 } from 'react-native-vision-camera';
 import {BarcodeFormat, scanBarcodes} from 'vision-camera-code-scanner';
 import * as REA from 'react-native-reanimated';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const SearchPacking = () => {
   global.__reanimatedWorkletInit = () => {};
@@ -132,7 +133,35 @@ const SearchPacking = () => {
   };
 
   const handleParseReport = () => {
-    navigation?.push('ReadPDF', {packingId, data});
+    fetch(`${LOCAL_IP}/api/export-report?id=${packingId}`)
+      .then(res => res.json())
+      .then(res => {
+        let base64Str = res.blob;
+        let pdfLocation =
+          RNFetchBlob.fs.dirs.DocumentDir +
+          '/' +
+          'report-' +
+          packingId +
+          '.pdf';
+        RNFetchBlob.fs
+          .writeFile(pdfLocation, base64Str, 'base64')
+          .then(resFile => {
+            console.log('success', {resFile, pdfLocation});
+            RNFetchBlob.android.actionViewIntent(
+              pdfLocation,
+              'application/pdf',
+            );
+          })
+          .catch(err => {
+            console.log('error', err);
+            Alert.alert('Error', 'Something went wrong');
+          });
+      })
+      .catch(err => {
+        setError(true);
+        console.error('fetch pdf', err);
+      })
+      .finally(() => setLoading(false));
   };
 
   if (error) {
@@ -161,6 +190,7 @@ const SearchPacking = () => {
                 }}>
                 <TextInput
                   placeholder="Part Number"
+                  keyboardType="numeric"
                   style={{flex: 1, borderWidth: 0.5}}
                   value={partNumber}
                   onChangeText={text => setPartNumber(text)}
