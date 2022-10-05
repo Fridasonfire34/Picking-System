@@ -21,7 +21,6 @@
 
     <application
         android:requestLegacyExternalStorage="true"
-        android:hardwareAccelerated="false"
         android:largeHeap="true"
         android:usesCleartextTraffic="true"
         tools:targetApi="28"
