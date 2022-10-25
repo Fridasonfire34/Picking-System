@@ -10,12 +10,6 @@ module.exports = {
           res: './src/res',
         },
       },
-    ],
-    [
-      'react-native-reanimated/plugin',
-      {
-        globals: ['__scanCodes', '__labelImage'],
-      },
-    ],
+    ]
   ],
 };
