@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -16,7 +16,6 @@ import {server} from '../utils/server';
 import RNFetchBlob from 'rn-fetch-blob';
 
 const SearchPacking = () => {
-  global.__reanimatedWorkletInit = () => {};
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -26,11 +25,6 @@ const SearchPacking = () => {
   const isFocused = useIsFocused();
   const route = useRoute();
   const {packingId} = route.params;
-
-  const devices = useCameraDevices();
-  const device = useMemo(() => {
-    return devices.back;
-  }, [devices]);
 
   useEffect(() => {
     setLoading(true);

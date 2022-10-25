@@ -67,21 +67,6 @@ const Home = () => {
           onPress={handleSearch}
           disabled={!hasPermissionStore}
         />
-        <>
-          <Text
-            style={{
-              textAlign: 'center',
-              marginVertical: 10,
-              fontSize: 15,
-            }}>
-            o
-          </Text>
-          <Button
-            title="Escanear código"
-            onPress={handleSearchBarcode}
-            disabled={!hasPermissionCamera}
-          />
-        </>
       </View>
     </View>
   );
