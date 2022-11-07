@@ -6,27 +6,80 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import {Platform, Linking, View, ActivityIndicator, Text} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeScreen from './src/components/Home';
 import SearchScreen from './src/components/SearchPacking';
 import SearchPart from './src/components/SearchPart';
 import ReadPDF from './src/components/ReadPDF';
+import SignInScreen from './src/components/SignIn';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import {NativeBaseProvider} from 'native-base';
 
+const PERSISTENCE_KEY = 'USER_STATE';
+
 const App = () => {
+  const [isReady, setIsReady] = useState(false);
+  const [initialState, setInitialState] = useState();
+
   const Stack = createNativeStackNavigator();
+
+  useEffect(() => {
+    const restoreState = async () => {
+      try {
+        const initialUrl = await Linking.getInitialURL();
+
+        if (Platform.OS !== 'web' && initialUrl == null) {
+          // Only restore state if there's no deep link and we're not on web
+          const savedStateString = await AsyncStorage.getItem(PERSISTENCE_KEY);
+          const state = savedStateString
+            ? JSON.parse(savedStateString)
+            : undefined;
+
+          if (state !== undefined) {
+            setInitialState(state);
+          }
+        }
+      } finally {
+        setIsReady(true);
+      }
+    };
+
+    if (!isReady) {
+      restoreState();
+    }
+  }, [isReady]);
+
+  if (!isReady) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <ActivityIndicator size="large" />
+        <Text style={{marginTop: 10, fontSize: 15}}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator initialRouteName={initialState ? 'Home' : 'SignIn'}>
           <Stack.Screen
             name="Home"
             component={HomeScreen}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="SignIn"
+            component={SignInScreen}
             options={{headerShown: false}}
           />
           <Stack.Screen

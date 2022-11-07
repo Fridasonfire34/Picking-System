@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Button,
@@ -8,7 +8,7 @@ import {
   View,
   PermissionsAndroid,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Home = () => {
   const [packingId, setPackingId] = useState('');
@@ -18,7 +18,7 @@ const Home = () => {
 
   const handleSearch = () => {
     if (packingId.length > 0) {
-      navigation?.push('SearchPacking', { packingId });
+      navigation?.push('SearchPacking', {packingId});
       setPackingId('');
     } else {
       Alert.alert('Error', 'Ingrese un numero de packing');
@@ -33,9 +33,9 @@ const Home = () => {
       ]);
       const isGrantedStore =
         resultStorage[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] ===
-        'granted' &&
+          'granted' &&
         resultStorage[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] ===
-        'granted';
+          'granted';
 
       setHasPermissionStorage(isGrantedStore);
     })();
@@ -51,13 +51,13 @@ const Home = () => {
         justifyContent: 'center',
       }}>
       <View>
-        <Text style={{ fontSize: 15, fontWeight: 'bold', marginVertical: 10 }}>
+        <Text style={{fontSize: 15, fontWeight: 'bold', marginVertical: 10}}>
           TMP Picking System
         </Text>
         <TextInput
           placeholder="Packing ID"
           keyboardType="numeric"
-          style={{ borderWidth: 1, borderColor: '#bdbdbd', marginVertical: 10 }}
+          style={{borderWidth: 1, borderColor: '#bdbdbd', marginVertical: 10}}
           value={packingId}
           onChangeText={text => setPackingId(text)}
           editable={hasPermissionStore}

@@ -10,6 +10,6 @@ module.exports = {
           res: './src/res',
         },
       },
-    ]
+    ],
   ],
 };
