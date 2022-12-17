@@ -10,7 +10,7 @@ const PERSISTENCE_KEY = 'USER_STATE';
 
 const SignInScreen = ({navigation}) => {
   const [userSession, setUserSession] = useState({
-    email: '',
+    id: '',
     password: '',
   });
 
@@ -21,8 +21,9 @@ const SignInScreen = ({navigation}) => {
     setLoading(true);
 
     const params = {
-      user: userSession.email,
+      user: userSession.id,
       password: userSession.password,
+      from: 'mobile',
     };
 
     axios(`${server()}/api/auth/session`, {params})
@@ -43,10 +44,10 @@ const SignInScreen = ({navigation}) => {
         <Text style={{fontSize: 15, fontWeight: 'bold'}}>User</Text>
         <TextInput
           style={{borderBottomWidth: 0.5, marginBottom: 25}}
-          placeholder="user@mail.com"
-          keyboardType="email-address"
-          value={userSession.email}
-          onChangeText={email => setUserSession({...userSession, email})}
+          placeholder="000XXX"
+          keyboardType="number-pad"
+          value={userSession.id}
+          onChangeText={id => setUserSession({...userSession, id})}
         />
         <Text style={{fontSize: 15, fontWeight: 'bold'}}>Password</Text>
         <TextInput
