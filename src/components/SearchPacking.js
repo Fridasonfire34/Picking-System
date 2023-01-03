@@ -151,6 +151,14 @@ const SearchPacking = () => {
     setSearch('');
   };
 
+  const removeItemSubmit = () => {
+   const item = filteredDataSource.find((f) => f.partnumber === search);
+   if(item){
+     updateItem(item.id)
+     setSearch("")
+   }
+  }
+
   if (loading) {
     return (
       <View style={styles.containerCenter}>
@@ -237,6 +245,8 @@ const SearchPacking = () => {
             style={styles.inputFilter}
             value={search}
             onChangeText={text => searchFilterFunction(text)}
+            returnKeyType="send"
+            onSubmitEditing={() => removeItemSubmit()}
           />
           {search.length > 0 && filteredDataSource.length > 0 && (
             <TouchableOpacity
