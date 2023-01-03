@@ -50,6 +50,10 @@ const SearchPacking = () => {
           setTotalParts(sumParts);
           setFilteredDataSource(res);
           setMasterDataSource(res);
+        } else {
+          setTotalParts(0);
+          setFilteredDataSource([]);
+          setMasterDataSource([]);
         }
       })
       .catch(err => {
@@ -103,11 +107,13 @@ const SearchPacking = () => {
         RNFetchBlob.fs
           .writeFile(pdfLocation, base64Str, 'base64')
           .then(async resFile => {
+            if (resFile) {
+              RNFetchBlob.android.actionViewIntent(
+                pdfLocation,
+                'application/pdf',
+              );
+            }
             await AsyncStorage.removeItem(PERSISTENCE_KEY);
-            RNFetchBlob.android.actionViewIntent(
-              pdfLocation,
-              'application/pdf',
-            );
             navigation.navigate('SignIn');
           })
           .catch(err => {
@@ -115,10 +121,9 @@ const SearchPacking = () => {
             Alert.alert('Mensaje', 'Existe un error al generar el reporte');
           });
       })
-      .catch(err => {
+      .catch(() => {
         setLoading(false);
         setError(true);
-        console.log(err);
       })
       .finally(() => setLoading(false));
   };
