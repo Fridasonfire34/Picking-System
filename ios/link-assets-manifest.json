@@ -1,0 +1,41 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Fahkwang-Medium.ttf",
+      "sha1": "887024d9d36498a7d50d56febc24863f223d2be9"
+    },
+    {
+      "path": "assets/fonts/Fahkwang-Regular.ttf",
+      "sha1": "a4af4a4a88b56fd7627694f94114b10831cf3428"
+    },
+    {
+      "path": "assets/fonts/Gayathri-Bold.ttf",
+      "sha1": "f763b547a89f845e56cdc3177bec4c56eff92b5d"
+    },
+    {
+      "path": "assets/fonts/Gayathri-Regular.ttf",
+      "sha1": "6a162c214e2c06f3cfbbae9b435c85654ad90d0e"
+    },
+    {
+      "path": "assets/fonts/Montserrat-SemiBold.ttf",
+      "sha1": "8580dec824bbdb6ce24d04d3aaf360776339f0a7"
+    },
+    {
+      "path": "assets/fonts/PlusJakartaSans-VariableFont_wght.ttf",
+      "sha1": "14d6cd1222e8888ac59270cd3cea09acaaf08ea7"
+    },
+    {
+      "path": "assets/fonts/Poppins-ExtraLight.ttf",
+      "sha1": "85af6582a7e6155917c605f9d3fed68c02b23b06"
+    },
+    {
+      "path": "assets/fonts/Questrial-Regular.ttf",
+      "sha1": "6f9756a98f1a5f3a0ce0611b4176f0dfa6fe2d0d"
+    },
+    {
+      "path": "assets/fonts/Raleway-VariableFont_wght.ttf",
+      "sha1": "1313d0f3ae4fe109e8ee0d416bbae29b6f95dece"
+    }
+  ]
+}

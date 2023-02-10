@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useRef, useState} from 'react';
-import {Button} from 'native-base';
-import {ActivityIndicator, Text, TextInput, View} from 'react-native';
+import {Button, ScrollView} from 'native-base';
+import {ActivityIndicator, Text, TextInput, View,Image,StyleSheet,ImageBackground} from 'react-native';
 import axios from 'axios';
 import {server} from '../utils/server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,10 +18,11 @@ const SignInScreen = ({navigation}) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const itop = require ("./assets/loginicon.png");
 
   const handleSignIn = () => {
     if (userSession.id === '' || userSession.password === '') {
-      setError('User and Password are required');
+      setError('El número de empleado y código de acceso son requeridos');
       return;
     } else {
       setLoading(true);
@@ -44,35 +45,58 @@ const SignInScreen = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1, justifyContent: 'center', margin: 20}}>
-      <Text style={{fontSize: 20}}>Sign In</Text>
+    <ScrollView>
+      <View style={{alignItems:'center'}}><Image source={itop} style={styles.topimage}></Image></View>
+    <View style={{flex: 1, 
+    justifyContent: 'center', 
+    margin: 15}}>
       <View style={{marginTop: 20}}>
-        <Text style={{fontSize: 15, fontWeight: 'bold'}}>User</Text>
+        <Text style={{fontSize: 18,
+        fontFamily:'Gayathri-Bold', 
+        marginLeft:15,
+        color:'black',}}>Número de empleado</Text>
         <TextInput
-          autoFocus
-          style={{borderBottomWidth: 0.5, marginBottom: 25}}
-          placeholder="000XXX"
+          autoFocus={true}
+          style={{marginLeft:15,
+            marginRight:30,
+            fontSize:14, 
+            borderColor: '#dcdcdc',
+            backgroundColor:'#dcdcdc', 
+            marginVertical: 10, 
+            paddingBottom:15,
+            paddingLeft:15}}
           keyboardType="number-pad"
           value={userSession.id}
           onChangeText={id => setUserSession({...userSession, id})}
           blurOnSubmit={false}
           onSubmitEditing={() => passwordRef.current.focus()}
         />
-        <Text style={{fontSize: 15, fontWeight: 'bold'}}>Password</Text>
+        <Text style={{fontSize: 18, 
+        color:'black',
+        fontFamily:'Gayathri-Bold',
+        marginLeft:15}}>Código de autorización</Text>
         <TextInput
           ref={passwordRef}
-          style={{borderBottomWidth: 0.5}}
-          placeholder="******"
+          style={{marginLeft:15,
+            color:'black',
+            marginRight:30,
+            fontSize:15,
+            borderColor: '#dcdcdc',
+            backgroundColor:'#dcdcdc', 
+            marginVertical: 10, 
+            paddingBottom:15,
+            paddingLeft:20}}
           secureTextEntry
           value={userSession.password}
           onChangeText={password => setUserSession({...userSession, password})}
           onSubmitEditing={handleSignIn}
         />
         <Button
+        background='darkBlue.600'
           style={{marginTop: 40}}
           disabled={loading}
           onPress={handleSignIn}>
-          {loading ? <ActivityIndicator color="white" /> : ' Sign In'}
+          {loading ? <ActivityIndicator color="white" /> : 'Entrar'}
         </Button>
         <Text
           style={{
@@ -84,7 +108,18 @@ const SignInScreen = ({navigation}) => {
         </Text>
       </View>
     </View>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  topimage:{
+    //justifyContent:'center',
+    //alignItems:'center',
+    marginTop:15,
+    width:120,
+    height:120
+  },
+});
 
 export default SignInScreen;

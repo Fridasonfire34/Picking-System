@@ -194,27 +194,14 @@ const SearchPacking = () => {
                 <View style={styles.horizontal}>
                   <View style={styles.area}>
                     <View style={styles.contentHorizontal}>
-                      <Text style={styles.textId}>ID</Text>
-                      <Text style={styles.textId}>{part.id}</Text>
-                    </View>
-                    <View style={styles.contentHorizontal}>
-                      <Text style={styles.subtitle}>Packing Disk No.</Text>
-                      <Text style={styles.item}>{part.packingdiskno}</Text>
-                    </View>
-                    <View style={styles.contentHorizontal}>
-                      <Text style={styles.subtitle}>Part Number</Text>
                       <Text style={styles.item}>{part.partnumber}</Text>
-                    </View>
-                    <View style={styles.contentHorizontal}>
-                      <Text style={styles.subtitle}>Quantity</Text>
-                      <Text style={styles.item}>{part.qty}</Text>
                     </View>
                   </View>
                   <TouchableOpacity
                     onPress={() => updateItem(item.id)}
                     style={styles.center}>
                     <View style={styles.clear}>
-                      <Text style={styles.textClear}>X</Text>
+                      <Text style={styles.textClear}>OK</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -236,11 +223,12 @@ const SearchPacking = () => {
             Packing ID: <Text style={styles.textBold}>{packingId}</Text>
           </Text>
           <Text style={styles.subtitle}>
-            Partes restantes: <Text style={styles.textBold}>{totalParts}</Text>
+            Piezas restantes: <Text style={styles.textBold}>{totalParts}</Text>
           </Text>
         </View>
         <View style={styles.contentFilter}>
           <TextInput
+          autoFocus={true}
             placeholder="Part Number"
             style={styles.inputFilter}
             value={search}
@@ -282,16 +270,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
+    fontFamily:'Fahkwang-Medium',
     fontSize: 20,
-    fontWeight: 'bold',
     color: '#212121',
   },
   subtitle: {
+    fontFamily:'Fahkwang-Medium',
     fontSize: 16,
     color: '#212121',
   },
   item: {
-    fontSize: 14,
+    fontFamily:'Montserrat-SemiBold',
+    fontSize: 16,
     color: '#212121',
   },
   textLink: {
@@ -300,6 +290,7 @@ const styles = StyleSheet.create({
     marginVertical: 15,
   },
   textBold: {
+    fontFamily: 'Gayathri-Regular',
     fontWeight: 'bold',
   },
   container: {
@@ -320,10 +311,10 @@ const styles = StyleSheet.create({
     marginVertical: 2,
   },
   separator: {
-    height: 1,
+    height: 2,
     width: '100%',
-    backgroundColor: '#607D8B',
-    opacity: 0.5,
+    backgroundColor: '#2196F3',
+    opacity: 1,
     marginVertical: 10,
   },
   textId: {
@@ -360,6 +351,7 @@ const styles = StyleSheet.create({
   inputFilter: {
     borderWidth: 1,
     borderColor: '#2196F3',
+    backgroundColor:'#dcdcdc',
     marginBottom: 10,
     flex: 1,
   },
